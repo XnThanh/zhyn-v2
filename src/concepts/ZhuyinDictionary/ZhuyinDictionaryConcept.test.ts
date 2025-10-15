@@ -1,7 +1,7 @@
 import { assertEquals } from "jsr:@std/assert";
 import { testDb } from "@utils/database.ts";
+import { Character, ZhuyinRep } from "@utils/types.ts";
 import ZhuyinDictionaryConcept from "./ZhuyinDictionaryConcept.ts";
-import { Character, ZhuyinRep } from "./ZhuyinDictionaryConcept.ts";
 
 Deno.test("Principle: Register several characters, lookup a character, lookup a wrong Zhuyin, lookup a partial zhuyin", async () => {
   const [db, client] = await testDb();
