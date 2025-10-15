@@ -1,39 +1,41 @@
-**concept** Quiz [Character, ZhuyinRep]
+**concept** Quiz  
+
 **purpose** track User's Zhuyin typing ability
+
 **principle** track the speed and accuracy for each Character that user typed
 
-**state**
-a set of Questions with
-  an questionId String
-  a character Character
-  a target ZhuyinRep
-  a response ZhuyinRep?
-  a startTime DateTime?
-  an endTime DateTime?
-  a speed Number?
-  a correct Boolean?
+**state**  
+a set of Questions with  
+  &emsp; an questionId String  
+  &emsp; a character Character  
+  &emsp; a target ZhuyinRep  
+  &emsp; a response ZhuyinRep?  
+  &emsp; a startTime DateTime?  
+  &emsp; an endTime DateTime?  
+  &emsp; a speed Number?  
+  &emsp; a correct Boolean?  
 
-**actions**
-register (Character, ZhuyinRep): (questionId: String)
-  effect Generate a questionId. Create a new Question with questionId, associated character and target ZhuyinRep, other fields unset. Return questionId.
+**actions**  
+register (Character, ZhuyinRep): (questionId: String)  
+  &emsp; effect Generate a questionId. Create a new Question with questionId, associated character and target ZhuyinRep, other fields unset. Return questionId.
 
-startQuestion (questionId: String)
-  requires Question not already started (startTime is unset)
-  effects update startTime of coresponding Question to current time
+startQuestion (questionId: String)  
+  &emsp; requires Question not already started (startTime is unset)  
+  &emsp; effects update startTime of coresponding Question to current time  
 
-submitAnswer (questionId: String, response: ZhuyinRep)
-  requires Question exists with endTime unset
-  effects
-  set endTime = current time
-  set response = response
-  set speed = endTime - startTime
-  set correct = (response = target)
+submitAnswer (questionId: String, response: ZhuyinRep)  
+  &emsp; requires Question exists with endTime unset  
+  &emsp; effects  
+  &emsp; set endTime = current time  
+  &emsp; set response = response  
+  &emsp; set speed = endTime - startTime  
+  &emsp; set correct = (response = target)  
 
-**queries**
-getSpeed (questionId: String): (speed: Number)
-  requires Question exists and endTime set
-  effect return speed associated with Question
+**queries**  
+getSpeed (questionId: String): (speed: Number)  
+  &emsp; requires Question exists and endTime set  
+  &emsp; effect return speed associated with Question  
 
-getAccuracy (questionId: String): (correct: Boolean)
-  requires Question exists and endTime set
-  effect return correct Boolean associated with Question
+getAccuracy (questionId: String): (correct: Boolean)  
+  &emsp; requires Question exists and endTime set  
+  &emsp; effect return correct Boolean associated with Question  

@@ -71,6 +71,7 @@ export default class ZhuyinDictionaryConcept {
   /**
    * **action** getAnswer (character: Character): (zhuyinRep: ZhuyinRep)
    *
+   * @requires Character exists
    * @effects returns the ZhuyinRep associated with the Character
    */
   async getAnswer(
