@@ -1,6 +1,6 @@
 **concept** ZhuyinDictionary
 **purpose** tracks the Zhuyin Representation of Characters
-**principle** each generate creates a random sentence with Chinese characters suitable to User level
+**principle** registers Chinese Characters and their ZhuyinRep, performs lookup of both Character and Zhuyin
 
 **state**
 a set of Characters with
