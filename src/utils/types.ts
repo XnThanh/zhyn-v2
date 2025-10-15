@@ -10,3 +10,6 @@ export type ID = string & { [Brand]: true };
  * Empty record type: enforces no entries.
  */
 export type Empty = Record<PropertyKey, never>;
+
+export type Character = ID;
+export type ZhuyinRep = ID;
