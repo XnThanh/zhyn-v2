@@ -5,20 +5,21 @@
 **principle** registers Chinese Characters and their ZhuyinRep, performs lookup of both Character and Zhuyin
 
 **state**  
-a set of Characters with  
+a set of CharacterEntries with  
+  &emsp; a Character (unique identifier)  
   &emsp; a ZhuyinRep
 
 **actions**  
 register (Character, ZhuyinRep)  
-  &emsp; requires Character doesn't already exist  
-  &emsp; effect add Character and associate with that ZhuyinRep  
+  &emsp; requires Character doesn't already exist in CharacterEntries  
+  &emsp; effect create new CharacterEntry with given Character and ZhuyinRep  
 
-unregister (Character, ZhuyinRep)  
-  &emsp; requires Character already exist  
-  &emsp; effect remove Character and corresponding ZhuyinRep  
+unregister (Character)  
+  &emsp; requires Character already exist in CharacterEntries  
+  &emsp; effect remove CharacterEntry associated with Character  
 
 getAnswer (Character): (ZhuyinRep)  
-  &emsp; requires Character already exist  
+  &emsp; requires Character already exist in CharacterEntries  
   &emsp; effects returns the ZhuyinRep associated with the Character  
 
 lookupZhuyin (ZhuyinRep): (characters: Character[])  
