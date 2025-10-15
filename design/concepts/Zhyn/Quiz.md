@@ -1,4 +1,4 @@
-**concept** Quiz  
+**concept** Quiz [Character, ZhuyinRep]  
 
 **purpose** track User's Zhuyin typing ability
 
@@ -17,18 +17,19 @@ a set of Questions with
 
 **actions**  
 register (Character, ZhuyinRep): (questionId: String)  
+  &emsp; requires Character and ZhuyinRep are a valid pair in ZhuyinDict  
   &emsp; effect Generate a questionId. Create a new Question with questionId, associated character and target ZhuyinRep, other fields unset. Return questionId.
 
 startQuestion (questionId: String)  
-  &emsp; requires Question not already started (startTime is unset)  
+  &emsp; requires Question exists and not already started (startTime is unset)  
   &emsp; effects update startTime of coresponding Question to current time  
 
 submitAnswer (questionId: String, response: ZhuyinRep)  
-  &emsp; requires Question exists with endTime unset  
+  &emsp; requires Question exists and started, with endTime unset  
   &emsp; effects  
   &emsp; set endTime = current time  
   &emsp; set response = response  
-  &emsp; set speed = endTime - startTime  
+  &emsp; set speed = endTime - startTime (in milliseconds)  
   &emsp; set correct = (response = target)  
 
 **queries**  
@@ -39,3 +40,12 @@ getSpeed (questionId: String): (speed: Number)
 getAccuracy (questionId: String): (correct: Boolean)  
   &emsp; requires Question exists and endTime set  
   &emsp; effect return correct Boolean associated with Question  
+
+**sync** register  
+*when*  
+  &emsp; Quiz.register (Character, providedZhuyinRep: ZhuyinRep)  
+*where*  
+  &emsp; ZhuyinDictionary.getAnswer(Character): (registeredZhuyinRep: ZhuyinRep)  
+*then*  
+  &emsp; if providedZhuyinRep === registeredZhuyinRep: Quiz.register(Character, registeredZhuyinRep: ZhuyinRep): (questionId: String)  
+  &emsp; else: error  
