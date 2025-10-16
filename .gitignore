@@ -5,3 +5,4 @@ ctx
 ctx.exe
 notes.md
 node_modules/
+config.json

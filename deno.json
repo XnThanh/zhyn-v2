@@ -1,6 +1,9 @@
 {
-    "imports": {
-        "@concepts/": "./src/concepts/",
-        "@utils/": "./src/utils/"
-    }
+  "compilerOptions": {
+    "types": ["./types/opencc-js.d.ts"]
+  },
+  "imports": {
+    "@concepts/": "./src/concepts/",
+    "@utils/": "./src/utils/"
+  }
 }
