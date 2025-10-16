@@ -609,7 +609,12 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:mongodb@^6.20.0"
+        "npm:@google/generative-ai@0.21",
+        "npm:@types/node@20",
+        "npm:mongodb@^6.20.0",
+        "npm:opencc-js@^1.0.5",
+        "npm:ts-node@^10.9.0",
+        "npm:typescript@5"
       ]
     }
   }

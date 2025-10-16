@@ -3,7 +3,10 @@ import { testDb } from "@utils/database.ts";
 import QuizConcept from "./QuizConcept.ts";
 import { IncorrectRecord } from "./QuizConcept.ts";
 import { Character, ID, ZhuyinRep } from "@utils/types.ts";
-import { assertAllNoError, assertNoError } from "@utils/assertNoError.ts";
+import {
+  assertAllNoError,
+  assertNoError,
+} from "@utils/errors/assertNoError.ts";
 
 // Helper for introducing a small delay if needed for time-sensitive tests
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
