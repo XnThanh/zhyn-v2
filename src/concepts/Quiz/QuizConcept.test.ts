@@ -34,29 +34,29 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
     const char3 = "呢" as Character;
     const zhuyin3 = "ㄋㄜ˙" as ZhuyinRep;
 
-    const result1 = await quizConcept.registerQuestion({
+    const question1 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char1,
       targetZhuyinRep: zhuyin1,
     });
-    assertNoError(result1);
-    const questionId1 = result1 as ID;
+    assertNoError(question1);
+    const questionId1 = question1 as ID;
 
-    const result2 = await quizConcept.registerQuestion({
+    const question2 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char2,
       targetZhuyinRep: zhuyin2,
     });
-    assertNoError(result2);
-    const questionId2 = result2 as ID;
+    assertNoError(question2);
+    const questionId2 = question2 as ID;
 
-    const result3 = await quizConcept.registerQuestion({
+    const question3 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char3,
       targetZhuyinRep: zhuyin3,
     });
-    assertNoError(result3);
-    const questionId3 = result3 as ID;
+    assertNoError(question3);
+    const questionId3 = question3 as ID;
 
     // Action 3: Respond question 1 (correct)
     const start1 = await quizConcept.startQuestion({
@@ -138,36 +138,137 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
 
 // The same character can be used again in another question
 // In many typing practice, the same word/character can appear multiple times
-Deno.test("registerQuestion: duplicate character ok", async () => {
+Deno.test("registerQuestion: duplicate question ok", async () => {
   const [db, client] = await testDb();
   const quizConcept = new QuizConcept(db);
 
   try {
-    const quizId = await quizConcept.makeQuiz({ length: 3 });
+    const quizId = await quizConcept.makeQuiz({ length: 1 });
 
     const char1 = "你" as Character;
     const zhuyin1 = "ㄋㄧˇ" as ZhuyinRep;
 
-    const result1 = await quizConcept.registerQuestion({
+    const question1 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char1,
       targetZhuyinRep: zhuyin1,
     });
-    assertNoError(result1);
-    const questionId1 = result1 as ID;
+    assertNoError(question1);
+    const questionId1 = question1 as ID;
 
-    const result2 = await quizConcept.registerQuestion({
+    const question2 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char1,
       targetZhuyinRep: zhuyin1,
     });
-    assertNoError(result2);
-    const questionId2 = result2 as ID;
+    assertNoError(question2);
+    const questionId2 = question2 as ID;
 
     assertNotEquals(
       questionId1,
       questionId2,
       "Each question should have a unique ID",
+    );
+  } finally {
+    await client.close();
+  }
+});
+
+Deno.test("startQuestion", async (t) => {
+  const [db, client] = await testDb();
+  const quizConcept = new QuizConcept(db);
+
+  try {
+    const quizId = await quizConcept.makeQuiz({ length: 1 });
+
+    const char1 = "你" as Character;
+    const zhuyin1 = "ㄋㄧˇ" as ZhuyinRep;
+
+    const question1 = await quizConcept.registerQuestion({
+      quizId: quizId,
+      character: char1,
+      targetZhuyinRep: zhuyin1,
+    });
+    assertNoError(question1);
+    const questionId1 = question1 as ID;
+
+    await t.step("cannot start question that already started", async () => {
+      await quizConcept.startQuestion({
+        quizId,
+        questionId: questionId1,
+      });
+
+      const startAgain = await quizConcept.startQuestion({
+        quizId,
+        questionId: questionId1,
+      });
+      assertEquals(
+        "error" in startAgain,
+        true,
+        "Starting a question that already started should fail.",
+      );
+    });
+
+    await t.step("cannot start non-existent question", async () => {
+      const start = await quizConcept.startQuestion({
+        quizId,
+        questionId: "invalid-id" as ID,
+      });
+      assertEquals(
+        "error" in start,
+        true,
+        "Starting a question with invalid questionId should fail.",
+      );
+    });
+  } finally {
+    await client.close();
+  }
+});
+
+Deno.test("submitAnswer", async (t) => {
+  const [db, client] = await testDb();
+  const quizConcept = new QuizConcept(db);
+
+  try {
+    const quizId = await quizConcept.makeQuiz({ length: 1 });
+
+    const char1 = "你" as Character;
+    const zhuyin1 = "ㄋㄧˇ" as ZhuyinRep;
+
+    const question1 = await quizConcept.registerQuestion({
+      quizId: quizId,
+      character: char1,
+      targetZhuyinRep: zhuyin1,
+    });
+    assertNoError(question1);
+
+    await t.step("cannot submit with invalid questionId", async () => {
+      const submit = await quizConcept.submitAnswer({
+        quizId,
+        questionId: "invalid-id" as ID,
+        response: "some response" as ZhuyinRep,
+      });
+      assertEquals(
+        "error" in submit,
+        true,
+        "Submitting answer with invalid questionId should fail.",
+      );
+    });
+
+    await t.step(
+      "cannot submit answer to a question that has not started",
+      async () => {
+        const submit = await quizConcept.submitAnswer({
+          quizId,
+          questionId: question1 as ID,
+          response: "some response" as ZhuyinRep,
+        });
+        assertEquals(
+          "error" in submit,
+          true,
+          "Submitting answer to question that has not started should fail.",
+        );
+      },
     );
   } finally {
     await client.close();
