@@ -41,6 +41,8 @@ export default class ZhuyinDictionaryConcept {
 
     // Insert the new character and its Zhuyin representation
     await this.charactersCollection.insertOne({ _id: character, zhuyinRep });
+
+    console.log(`REGISTERED ${character} --> ${zhuyinRep}`);
     return {};
   }
 
@@ -65,6 +67,8 @@ export default class ZhuyinDictionaryConcept {
 
     // Delete the character entry
     await this.charactersCollection.deleteOne({ _id: character });
+
+    console.log(`UNREGISTERED ${character}`);
     return {};
   }
 
@@ -79,12 +83,15 @@ export default class ZhuyinDictionaryConcept {
       character: Character;
     },
   ): Promise<{ zhuyinRep: ZhuyinRep } | { error: string }> {
+    console.log(`RETRIEVING ${character}...`);
     const entry = await this.charactersCollection.findOne({ _id: character });
     if (!entry) {
       return {
         error: `Zhuyin representation for character '${character}' not found.`,
       };
     }
+
+    console.log(`RETRIEVED ${entry.zhuyinRep} for ${character}`);
     return { zhuyinRep: entry.zhuyinRep };
   }
 
@@ -104,6 +111,10 @@ export default class ZhuyinDictionaryConcept {
 
     const entries = await this.charactersCollection.find(query).toArray();
     const characters = entries.map((entry) => entry._id);
+
+    console.log(
+      `LOOKUP ${zhuyinRep} FOUND [${characters}]`,
+    );
     return { characters };
   }
 }

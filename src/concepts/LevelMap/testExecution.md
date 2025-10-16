@@ -1,12 +1,12 @@
-deno test .\src\concepts\LevelMap\LevelMapConcept.test.ts --allow-read --allow-sys --allow-net --allow-env
-Check file:///C:/Users/Thanh/dev/6.1040/zhyn-v2/src/concepts/LevelMap/LevelMapConcept.test.ts
-running 5 tests from ./src/concepts/LevelMap/LevelMapConcept.test.ts
-Principle: add/remove characters and generate sentence sequence ...
-------- output -------
-🤖 Requesting sentence generation from Gemini AI (Attempt 1)...
-✅ Received response from Gemini AI!
+deno test .\src\concepts\LevelMap\LevelMapConcept.test.ts --allow-read --allow-sys --allow-net --allow-env  
+Check file:///C:/Users/Thanh/dev/6.1040/zhyn-v2/src/concepts/LevelMap/LevelMapConcept.test.ts  
+running 5 tests from ./src/concepts/LevelMap/LevelMapConcept.test.ts  
+Principle: add/remove characters and generate sentence sequence ...  
+------- output -------  
+🤖 Requesting sentence generation from Gemini AI (Attempt 1)...  
+✅ Received response from Gemini AI!  
 
-🤖 RAW GEMINI RESPONSE
+🤖 RAW GEMINI RESPONSE  
 ======================
 {
   "sentences": [
@@ -69,16 +69,16 @@ Principle: add/remove characters and generate sentence sequence ...
   "她好愛他。",   "他好愛她。",
   "我好愛她。"
 ]
-Generated 15 sentences (requested 15). Took 1 attempts
------ output end -----
-Principle: add/remove characters and generate sentence sequence ... ok (2s)
-LevelMap: generateSentence fails on empty level ... ok (563ms)
-LevelMap: generateSentence works with one character ...
-------- output -------
-🤖 Requesting sentence generation from Gemini AI (Attempt 1)...
-✅ Received response from Gemini AI!
+Generated 15 sentences (requested 15). Took 1 attempts  
+----- output end -----  
+Principle: add/remove characters and generate sentence sequence ... ok (2s)  
+LevelMap: generateSentence fails on empty level ... ok (563ms)  
+LevelMap: generateSentence works with one character ...  
+------- output -------  
+🤖 Requesting sentence generation from Gemini AI (Attempt 1)...  
+✅ Received response from Gemini AI!  
 
-🤖 RAW GEMINI RESPONSE
+🤖 RAW GEMINI RESPONSE  
 ======================
 {
   "sentences": [
@@ -148,15 +148,15 @@ LevelMap: generateSentence works with one character ...
   "爸爸爸爸爸爸爸爸爸爸爸爸爸爸",
   "爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸"
 ]
-Generated 15 sentences (requested 15). Took 1 attempts
------ output end -----
-LevelMap: generateSentence works with one character ... ok (2s)
-LevelMap: generateSentence works with multiple characters ...
-------- output -------
-🤖 Requesting sentence generation from Gemini AI (Attempt 1)...
-✅ Received response from Gemini AI!
+Generated 15 sentences (requested 15). Took 1 attempts  
+----- output end -----  
+LevelMap: generateSentence works with one character ... ok (2s)  
+LevelMap: generateSentence works with multiple characters ...  
+------- output -------  
+🤖 Requesting sentence generation from Gemini AI (Attempt 1)...  
+✅ Received response from Gemini AI!  
 
-🤖 RAW GEMINI RESPONSE
+🤖 RAW GEMINI RESPONSE  
 ======================
 {
   "sentences": [
@@ -219,15 +219,15 @@ LevelMap: generateSentence works with multiple characters ...
   "爸愛我，媽愛我。",   "我愛爸媽，我愛家。",
   "爸媽愛我，我愛家。"
 ]
-Generated 15 sentences (requested 15). Took 1 attempts
------ output end -----
-LevelMap: generateSentence works with multiple characters ... ok (2s)
-LevelMap: generateSentence works with many characters ...
-------- output -------
-🤖 Requesting sentence generation from Gemini AI (Attempt 1)...
-✅ Received response from Gemini AI!
+Generated 15 sentences (requested 15). Took 1 attempts  
+----- output end -----  
+LevelMap: generateSentence works with multiple characters ... ok (2s)  
+LevelMap: generateSentence works with many characters ...  
+------- output -------  
+🤖 Requesting sentence generation from Gemini AI (Attempt 1)...  
+✅ Received response from Gemini AI!  
 
-🤖 RAW GEMINI RESPONSE
+🤖 RAW GEMINI RESPONSE  
 ======================
 {
   "sentences": [
@@ -280,11 +280,11 @@ LevelMap: generateSentence works with many characters ...
 }
 ======================
 
-⚠️ "我愛吃米飯和菜。" contains characters not in level "Beginner" and was removed.
-⚠️ "你跟誰去飯館？" contains characters not in level "Beginner" and was removed.
-⚠️ "飯館裡有肉和魚。" contains characters not in level "Beginner" and was removed.
-⚠️ "這個飯館很不錯。" contains characters not in level "Beginner" and was removed.
-⚠️ "我們在飯館坐著。" contains characters not in level "Beginner" and was removed.
+⚠️ "我愛吃米飯和菜。" contains characters not in level "Beginner" and was removed.  
+⚠️ "你跟誰去飯館？" contains characters not in level "Beginner" and was removed.  
+⚠️ "飯館裡有肉和魚。" contains characters not in level "Beginner" and was removed.  
+⚠️ "這個飯館很不錯。" contains characters not in level "Beginner" and was removed.  
+⚠️ "我們在飯館坐著。" contains characters not in level "Beginner" and was removed.  
 [
   "我們去飯館吃飯。",
   "這飯館很好吃。",
@@ -297,10 +297,10 @@ LevelMap: generateSentence works with many characters ...
   "我明天要去飯館。",
   "飯館裡有什麼菜？"
 ]
-🤖 Requesting sentence generation from Gemini AI (Attempt 2)...
-✅ Received response from Gemini AI!
+🤖 Requesting sentence generation from Gemini AI (Attempt 2)...  
+✅ Received response from Gemini AI!  
 
-🤖 RAW GEMINI RESPONSE
+🤖 RAW GEMINI RESPONSE  
 ======================
 {
   "sentences": [
@@ -353,7 +353,7 @@ LevelMap: generateSentence works with many characters ...
 }
 ======================
 
-⚠️ "你喜歡吃什麼菜？" contains characters not in level "Beginner" and was removed.
+⚠️ "你喜歡吃什麼菜？" contains characters not in level "Beginner" and was removed.  
 [
   "這家飯館的菜很好吃。",
   "我們明天去飯館。",
@@ -366,12 +366,12 @@ LevelMap: generateSentence works with many characters ...
   "你愛吃米飯嗎？",
   "我們在飯館看書。",
   "這飯館的飯很好。"
-]
-⚠️ "飯館裡有魚和肉。" contains characters not in level "Beginner" and was removed.
-⚠️ "你喜歡這家飯館嗎？" contains characters not in level "Beginner" and was removed.
-⚠️ "飯館裡有雞蛋和牛奶。" contains characters not in level "Beginner" and was removed.
-Generated 16 sentences (requested 15). Took 2 attempts
------ output end -----
-LevelMap: generateSentence works with many characters ... ok (10s)
+]  
+⚠️ "飯館裡有魚和肉。" contains characters not in level "Beginner" and was removed.  
+⚠️ "你喜歡這家飯館嗎？" contains characters not in level "Beginner" and was removed.  
+⚠️ "飯館裡有雞蛋和牛奶。" contains characters not in level "Beginner" and was removed.  
+Generated 16 sentences (requested 15). Took 2 attempts  
+----- output end -----  
+LevelMap: generateSentence works with many characters ... ok (10s)  
 
 ok | 5 passed | 0 failed (18s)

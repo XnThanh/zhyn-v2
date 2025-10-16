@@ -73,6 +73,10 @@ export default class QuizConcept {
       avgSpeed: 0,
       avgAccuracy: 0,
     });
+
+    console.log(
+      `CREATED new quiz with ID: ${quizId}, length: ${length} seconds`,
+    );
     return quizId;
   }
 
@@ -108,11 +112,20 @@ export default class QuizConcept {
       };
     }
 
-    return {
+    console.log(`Time is up! ENDING quiz ${quizId} and calculating results.`);
+    await this.quizzesCollection.updateOne(
+      { _id: quizId },
+      { $set: { activeQuestionId: "time's up" as ID } }, // prevent any more questions from being submitted
+    );
+
+    const stats = {
       avgSpeed: quiz.avgSpeed,
       avgAccuracy: quiz.avgAccuracy,
       incorrectRecords: quiz.incorrectList,
     };
+
+    console.log(`Quiz ${quizId} results: ${JSON.stringify(stats, null, 2)}`);
+    return stats;
   }
 
   /**
@@ -151,6 +164,9 @@ export default class QuizConcept {
       },
     );
 
+    console.log(
+      `${character} REGISTERED as question ${questionId} in quiz ${quizId}`,
+    );
     return questionId;
   }
 
@@ -208,6 +224,8 @@ export default class QuizConcept {
       { _id: questionId },
       { $set: { startTime: new Date() } },
     );
+
+    console.log(`STARTED question ${questionId} in quiz ${quizId}`);
     return {};
   }
 
@@ -304,6 +322,11 @@ export default class QuizConcept {
       );
     }
 
+    console.log(
+      `SUBMITTED ${
+        correct ? "CORRECT" : "INCORRECT"
+      } ${response} for question ${questionId} in quiz ${quizId}`,
+    );
     return {};
   }
 }
