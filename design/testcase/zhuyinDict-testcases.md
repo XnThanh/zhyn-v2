@@ -1,3 +1,9 @@
+**principle**  
+1. Register several characters
+2. lookup a character
+3. lookup a wrong Zhuyin
+4. lookup a partial zhuyin
+
 **register**  
 add new character  
 add duplicate character  
