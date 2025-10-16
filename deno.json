@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "imports": {
         "@concepts/": "./src/concepts/",
         "@concepts": "./src/concepts/concepts.ts",
@@ -22,3 +23,13 @@
         }
     }
 }
+=======
+  "compilerOptions": {
+    "types": ["./types/opencc-js.d.ts"]
+  },
+  "imports": {
+    "@concepts/": "./src/concepts/",
+    "@utils/": "./src/utils/"
+  }
+}
+>>>>>>> 9557c71 (LevelMap test complete)

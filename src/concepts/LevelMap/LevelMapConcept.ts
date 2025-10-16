@@ -2,7 +2,7 @@ import { Collection, Db } from "npm:mongodb";
 import { Character, Empty, ID } from "@utils/types.ts";
 import { GeminiLLM } from "../../../gemini-llm.ts";
 import { LLMRetryableError } from "../../utils/errors/LLMRetryableError.ts";
-import { LevelEnum } from "@utils/LevelEnum.ts";
+// import { LevelEnum } from "@utils/LevelEnum.ts";
 import { LevelNotFoundError } from "../../utils/errors/LevelNotFoundError.ts";
 import { LevelEmptyError } from "../../utils/errors/LevelEmptyError.ts";
 import { toTraditional } from "../../helpers/opencc-helper.ts";
@@ -30,6 +30,10 @@ export default class LevelMapConcept {
   constructor(private readonly db: Db) {
     // Initialize the MongoDB collection for storing level-character associations.
     this.levels = this.db.collection(PREFIX + "levels");
+  }
+
+  get collectionName() {
+    return this.levels.collectionName;
   }
 
   /**
@@ -131,11 +135,15 @@ export default class LevelMapConcept {
    * @param llm - The connected LLM (e.g., Gemini)
    * @returns A list of sentences
    */
-  async generateSentences(
-    levelName: LevelName,
-    topic: string,
-    llm: GeminiLLM,
-  ): Promise<string[]> {
+  async generateSentences({
+    levelName,
+    topic,
+    llm,
+  }: {
+    levelName: LevelName;
+    topic: string;
+    llm: GeminiLLM;
+  }): Promise<string[]> {
     const level = await this.levels.findOne({ _id: levelName });
     if (!level) {
       throw new LevelNotFoundError(`❌ Level "${levelName}" not found.`);
