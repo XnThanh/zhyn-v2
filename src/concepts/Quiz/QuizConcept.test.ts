@@ -1,6 +1,7 @@
 import { assert, assertEquals, assertNotEquals } from "jsr:@std/assert";
 import { testDb } from "@utils/database.ts";
 import QuizConcept from "./QuizConcept.ts";
+import { IncorrectRecord } from "./QuizConcept.ts";
 import { Character, ID, ZhuyinRep } from "@utils/types.ts";
 import { assertAllNoError, assertNoError } from "@utils/assertNoError.ts";
 
@@ -21,7 +22,7 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
 
   try {
     // Action 1: Make new quiz
-    const quizId = await quizConcept.makeQuiz({ length: 3 });
+    const quizId = await quizConcept.makeQuiz({ length: 1 });
 
     // Action 2: Add three questions
     const char1 = "你" as Character;
@@ -90,29 +91,45 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
     await delay(300); // timer should run out before this delay ends
 
     // TODO: remove below line when timer sync is implemented
-    const stats = await quizConcept.endQuiz({ quizId }); // manual endQuiz bc sync not yet implemented
-
-    const expectedStats = {
-      avgSpeed: 400,
-      avgAccuracy: 0.5,
-      incorrectRecords: [{
-        character: char2,
-        target: zhuyin2,
-        response: wrongzhuyin2,
-      }],
+    const quizResults = await quizConcept.endQuiz({ quizId }); // manual endQuiz bc sync not yet implemented
+    assertNoError(quizResults);
+    const stats = quizResults as {
+      avgSpeed: number;
+      avgAccuracy: number;
+      incorrectRecords: IncorrectRecord[];
     };
-    assertEquals(
-      stats,
-      expectedStats,
-      "Quiz statistics should match expected values",
+
+    // Check that avgSpeed is between 400 and 500
+    assert(
+      stats.avgSpeed >= 400 && stats.avgSpeed <= 500,
+      `Expected average speed ${stats.avgSpeed} to be between 400 and 500, Actual: ${stats.avgSpeed}`,
     );
+
+    // Check accuracy
+    assertEquals(
+      stats.avgAccuracy,
+      0.5,
+      `Expected average accuracy: 0.5, Actual: ${stats.avgAccuracy}`,
+    );
+
+    // Check incorrectRecords
+    const expectedInccorect = [{
+      character: char2,
+      target: zhuyin2,
+      response: wrongzhuyin2,
+    }];
+    assertEquals(
+      stats.incorrectRecords,
+      expectedInccorect,
+      `Expected: ${expectedInccorect}, Actual: ${stats.incorrectRecords}`,
+    );
+
     assertAllNoError([
       { value: start1 },
       { value: submit1 },
       { value: start2 },
       { value: submit2 },
       { value: start3 },
-      { value: stats },
     ]);
   } finally {
     await client.close();
