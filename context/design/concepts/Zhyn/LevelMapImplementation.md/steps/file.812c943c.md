@@ -1,0 +1,530 @@
+---
+timestamp: 'Thu Oct 16 2025 04:37:02 GMT-0400 (Eastern Daylight Time)'
+parent: '[[..\20251016_043702.f766eaa0.md]]'
+content_id: 812c943c2125d908160e5ec7d976fdefa628b06657f7a62607d286e37893afff
+---
+
+# file: src\concepts\LevelMap\LevelMapConcept.ts
+
+```typescript
+import { Collection, Db } from "npm:mongodb";
+import { Character, Empty, ID, ZhuyinRep } from "@utils/types.ts";
+
+const PREFIX = "LevelMap" + ".";
+type LevelName = ID;
+
+interface Level {
+  _id: LevelName; // The unique identifier for a learning level ("Newbie", "Beginner", "Intermediate", "Advanced").
+  characters: Character[]; // An array of character IDs associated with this level.
+}
+
+enum LevelEnum {
+  Newbie = "newbie",
+  Beginner = "beginner",
+  Intermediate = "intermediate",
+  Advanced = "advanced",
+}
+
+/**
+ * The LevelMap concept manages the association of specific characters
+ * with different learning levels, enabling the generation of level-appropriate
+ * content.
+ */
+export default class LevelMapConcept {
+  private levels: Collection<Level>;
+
+  // Constructs a new LevelMapConcept instance.
+  constructor(private readonly db: Db) {
+    // Initialize the MongoDB collection for storing level-character associations.
+    this.levels = this.db.collection(PREFIX + "levels");
+  }
+
+  /**
+   * addCharacter (character: Character, level: Level): Empty | { error: String }
+   *
+   * Associates a given character with a specified learning level.
+   * If the level does not exist, it will be created.
+   *
+   * @param args - The input arguments for the action.
+   * @param args.character - The `ID` of the character to be added.
+   * @param args.level - The `ID` of the level to which the character should be associated.
+   *
+   * @requires The `character` must not already be associated with the `level`.
+   * @effects The `character` is added to the set of characters for the specified `level`.
+   *          If the `level` did not exist, a new `level` entry is created.
+   */
+  async addCharacter(
+    { character, level }: { character: Character; level: LevelName },
+  ): Promise<Empty | { error: string }> {
+    // Attempt to find the existing level document.
+    let levelDoc = await this.levels.findOne({ _id: level });
+
+    if (!levelDoc) {
+      // If the level does not exist, create a new document for it with the character.
+      levelDoc = { _id: level, characters: [character] };
+      await this.levels.insertOne(levelDoc);
+      return {}; // Successful creation and association.
+    }
+
+    // Precondition check: Character not already in Level.
+    if (levelDoc.characters.includes(character)) {
+      return {
+        error:
+          `Character '${character}' is already associated with Level '${level}'.`,
+      };
+    }
+
+    // Effect: Add the character to the existing level's character set.
+    // $addToSet ensures that the character is only added if it's not already present,
+    // though our explicit check above already handles this.
+    await this.levels.updateOne(
+      { _id: level },
+      { $addToSet: { characters: character } },
+    );
+
+    return {}; // Successful association.
+  }
+
+  /**
+   * removeCharacter (character: Character, level: Level): Empty | { error: String }
+   *
+   * Disassociates a character from a specified learning level.
+   *
+   * @param args - The input arguments for the action.
+   * @param args.character - The `ID` of the character to be removed.
+   * @param args.level - The `ID` of the level from which the character should be removed.
+   *
+   * @requires The `character` must currently be associated with the `level`.
+   * @effects The `character` is removed from the set of characters for the specified `level`.
+   */
+  async removeCharacter(
+    { character, level }: { character: Character; level: LevelName },
+  ): Promise<Empty | { error: string }> {
+    // Attempt to find the existing level document.
+    const levelDoc = await this.levels.findOne({ _id: level });
+
+    // Check if the level exists.
+    if (!levelDoc) {
+      return { error: `Level '${level}' does not exist.` };
+    }
+
+    // Precondition check: Character in Level.
+    if (!levelDoc.characters.includes(character)) {
+      return {
+        error:
+          `Character '${character}' is not associated with Level '${level}'.`,
+      };
+    }
+
+    // Effect: Remove the character from the level's character set.
+    await this.levels.updateOne(
+      { _id: level },
+      { $pull: { characters: character } },
+    );
+
+    // Optional: Could consider deleting the level document if its 'characters' array becomes empty.
+    // The current specification does not explicitly require this, so the empty level document persists.
+
+    return {}; // Successful disassociation.
+  }
+}
+
+// import { GeminiLLM } from "../../../gemini-llm.ts";
+// import OpenCC from "opencc-js";
+// import { LLMRetryableError } from "../../utils/errors/LLMRetryableError.ts";
+// import { LevelName } from "../../utils/errors/LevelName.ts";
+// import { LevelNotFoundError } from "../../utils/errors/LevelNotFoundError.ts";
+// import { CharNotFoundError } from "../../utils/errors/CharNotFoundError.ts";
+// import { CharNotRegisteredError } from "../../utils/errors/CharNotRegisteredError.ts";
+// import { InvalidCharError } from "../../utils/errors/InvalidChar.ts";
+// import { LevelEmptyError } from "../../utils/errors/LevelEmptyError.ts";
+
+// // A unique phonetic representation of a Chinese character, may be shared by multiple characters
+// export interface ZhuyinRep {
+//   symbol: string; // e.g., "ㄅㄚ"
+// }
+
+// // A single character with a unique Zhuyin representation
+// export interface Character {
+//   char: string; // e.g., "爸"
+//   zhuyin: ZhuyinRep;
+// }
+
+// // A level containing a set of characters
+// export interface Level {
+//   levelName: LevelName;
+//   characters: Character[];
+// }
+
+// export class Database {
+//   private levels: Level[] = [];
+//   private characters: Character[] = [];
+
+//   /**
+//    * Register a new Traditional Chinese character into the database.
+//    * @param char - The Chinese character
+//    * @param zhuyinRep - The Zhuyin representation
+//    * @throws Error if the character is not Traditional Chinese
+//    */
+//   register(char: string, zhuyinRep: ZhuyinRep): void {
+//     const existing = this.characters.find((c) => c.char === char);
+//     if (existing) {
+//       console.warn(`⚠️ "${char}" already registered. Skipping.`);
+//       return;
+//     }
+
+//     if (!this.isTraditional(char)) {
+//       throw new InvalidCharError(`❌ "${char}" is not Traditional Chinese.`);
+//     }
+
+//     const character: Character = {
+//       char: char,
+//       zhuyin: zhuyinRep,
+//     };
+
+//     this.characters.push(character);
+//     console.log(`✅ Registered new character: ${char} (${zhuyinRep})`);
+//   }
+
+//   /**
+//    * Add a registered character to a level.
+//    * @param char - The Chinese character
+//    * @param levelName - The level name to add the character to
+//    * @throws Error if the character is not registered
+//    */
+//   addCharacter(char: string, levelName: LevelName): void {
+//     const character = this.characters.find((c) => c.char === char);
+//     if (!character) {
+//       throw new CharNotRegisteredError(
+//         `❌ Character "${char}" must be registered before adding to a level.`,
+//       );
+//     }
+
+//     let level = this.levels.find((l) => l.levelName === levelName);
+//     if (!level) {
+//       // Create level if it doesn't exist yet
+//       level = { levelName: levelName, characters: [] };
+//       this.levels.push(level);
+//     }
+
+//     if (level.characters.find((c) => c.char === char)) {
+//       console.warn(`⚠️ "${char}" already in "${levelName}" level. Skipping.`);
+//     } else {
+//       level.characters.push(character);
+//     }
+//     console.log(`✅ Added ${char} to level "${levelName}"`);
+//   }
+
+//   /**
+//    * Remove a character from a level.
+//    * @param char - The Chinese character
+//    * @param levelName - The level name
+//    * @throws Error if the level or character is not found
+//    */
+//   removeCharacter(char: string, levelName: LevelName): void {
+//     const level = this.levels.find((l) => l.levelName === levelName);
+//     if (!level) {
+//       throw new LevelNotFoundError(`❌ Level "${levelName}" not found.`);
+//     }
+
+//     const index = level.characters.findIndex((c) => c.char === char);
+//     if (index === -1) {
+//       throw new CharNotFoundError(
+//         `❌ Character "${char}" not found in Level "${levelName}".`,
+//       );
+//     }
+
+//     // update original array
+//     level.characters.splice(index, 1);
+
+//     console.log(`✅ Removed ${char} from level "${levelName}"`);
+//   }
+
+//   /**
+//    * Retrieve the Zhuyin representation for a given character.
+//    * @param char - The Chinese character
+//    * @returns The ZhuyinRep associated with the character
+//    * @throws Error if the character is not found
+//    */
+//   getAnswer(char: string): ZhuyinRep {
+//     const character = this.characters.find((c) => c.char === char);
+//     if (!character) {
+//       throw new CharNotFoundError(`❌ "${char}" not found.`);
+//     }
+//     return character.zhuyin;
+//   }
+
+//   /**
+//    * Generate a series of sentences on a given topic suitable for a given level.
+//    * @param levelName - The name of the level
+//    * @param topic - The topic for the generated sentence
+//    * @param llm - The connected LLM (e.g., Gemini)
+//    * @returns A list of sentences
+//    */
+//   async generateSentences(
+//     levelName: string,
+//     topic: string,
+//     llm: GeminiLLM,
+//   ): Promise<string[]> {
+//     const level = this.levels.find((l) => l.levelName === levelName);
+//     if (!level) {
+//       throw new LevelNotFoundError(`❌ Level "${levelName}" not found.`);
+//     }
+
+//     if (level.characters.length === 0) {
+//       throw new LevelEmptyError(`❌ Level "${levelName}" has no characters.`);
+//     }
+
+//     const numSentences = 15;
+//     const passRate = 0.3;
+//     const defaultRetries = 4;
+
+//     return await this.llmGenerate(
+//       topic,
+//       level,
+//       llm,
+//       defaultRetries,
+//       numSentences,
+//       passRate,
+//     );
+//   }
+
+//   /**
+//    * Helper to execute LLM request and parse response with retry logic.
+//    * @param prompt - LLM prompt string
+//    * @param llm - GeminiLLM instance
+//    * @param maxAttempts - total retry attempts
+//    */
+//   private async llmGenerate(
+//     topic: string,
+//     level: Level,
+//     llm: GeminiLLM,
+//     maxAttempts: number,
+//     numSentences: number,
+//     passRate: number,
+//   ): Promise<string[]> {
+//     const collected: string[] = [];
+
+//     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+//       const prompt = this.createPrompt(topic, level, numSentences, collected);
+//       // console.log(prompt);
+
+//       try {
+//         console.log(
+//           `🤖 Requesting sentence generation from Gemini AI (Attempt ${attempt})...`,
+//         );
+//         const response = await llm.executeLLM(prompt);
+
+//         console.log("✅ Received response from Gemini AI!");
+//         console.log("\n🤖 RAW GEMINI RESPONSE");
+//         console.log("======================");
+//         console.log(response);
+//         console.log("======================\n");
+
+//         const validSentences = this.parseGeneratedSentences(response, level);
+//         console.log(validSentences);
+//         // collect valid sentences from each retry
+//         for (const s of validSentences) {
+//           if (!collected.includes(s)) {
+//             collected.push(s);
+//           }
+//         }
+
+//         // early return if we've collected enough
+//         if (collected.length >= numSentences) {
+//           console.log(
+//             `Generated ${collected.length} sentences (requested ${numSentences}). Took ${attempt} attempts`,
+//           );
+//           return collected;
+//         }
+
+//         if (attempt === maxAttempts) {
+//           if (collected.length >= numSentences * passRate) {
+//             return collected;
+//           } else {
+//             throw new Error("Could not generate enough valid sentences.");
+//           }
+//         }
+//       } catch (error) {
+//         if (error instanceof LLMRetryableError) {
+//           console.warn(
+//             `⚠️ Retryable error while parsing LLM response: ${error.message}`,
+//           );
+//           if (attempt < maxAttempts) {
+//             console.log("🔄 Retrying LLM request...");
+//             continue;
+//           } else {
+//             if (collected.length >= numSentences * passRate) {
+//               console.log(
+//                 `⚠️ Max attempts reached, returning ${collected.length} collected sentences.`,
+//               );
+//               return collected;
+//             } else {
+//               throw new Error(
+//                 `❌ Failed to generate enough sentences after ${maxAttempts} attempts. Only ${collected.length} valid sentences collected.`,
+//               );
+//             }
+//           }
+//         } else {
+//           // Non-retryable errors propagate immediately
+//           console.error("❌ Unexpected error:", (error as Error).message);
+//           throw error;
+//         }
+//       }
+//     }
+
+//     throw new Error("❌ Unexpected Error.");
+//   }
+
+//   /**
+//    * Create the prompt for Gemini with hardwired preferences
+//    */
+//   private createPrompt(
+//     topic: string,
+//     level: Level,
+//     numSentences: number,
+//     prevSentences: string[],
+//   ): string {
+//     const state = prevSentences.length > 0
+//       ? `These are valid sentences already generated using strictly characters from the permitted list:
+// ${prevSentences.join("")}`
+//       : "";
+
+//     return `I have a list of permitted Traditional Chinese characters. Your task is to generate ${numSentences} unique, grammatically correct, and meaningful sentences using **only** characters from this list. You may repeat characters in a single sentence. Do not include whitespace.
+
+// **ABSOLUTELY NO CHARACTER OUTSIDE OF THIS LIST IS ALLOWED.**
+
+// **The Permitted Character List:**
+// ${level.characters.map((c) => `${c.char}`).join(",")}
+
+// ${state}
+
+// Generate ${numSentences} new sentences related to the topic: "${topic}" using only the permitted characters.
+
+// Return your response as a JSON object with this exact structure:
+// {
+//   "sentences": [
+//     {
+//       "sentence": "valid sentence with punctuation on given topic using only the allowed characters"
+//     }
+//   ]
+// }
+
+// Return ONLY the JSON object, no additional text.`;
+//   }
+
+//   /**
+//    * Parse and validate the LLM response
+//    * @param responseText - Raw text response from LLM
+//    * @param level - Level to validate against
+//    * @returns Array of valid sentences
+//    * @throws LLMRetryableError or other errors on failure
+//    */
+//   private parseGeneratedSentences(
+//     responseText: string,
+//     level: Level,
+//   ): string[] {
+//     try {
+//       // Extract JSON from response (in case there's extra text)
+//       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+//       if (!jsonMatch) {
+//         throw new LLMRetryableError("No JSON found in response");
+//       }
+
+//       const response = JSON.parse(jsonMatch[0]);
+
+//       if (!response.sentences || !Array.isArray(response.sentences)) {
+//         throw new LLMRetryableError("Invalid response format");
+//       }
+
+//       // Map and convert each sentence to Traditional Chinese, in case LLM used Simplified (possible hallucination)
+//       const sentences: string[] = response.sentences
+//         .map((s: any) => s.sentence)
+//         .filter((s: any) => typeof s === "string")
+//         .map((s: string) => this.toTraditional(s));
+
+//       // Validate sentences, remove invalid ones
+//       const validSentences = this.validateSentences(sentences, level);
+
+//       return validSentences;
+//     } catch (error) {
+//       if (error instanceof LLMRetryableError) {
+//         throw error; // propagate retryable errors
+//       } else {
+//         console.error(
+//           "❌ Error parsing LLM response:",
+//           (error as Error).message,
+//         );
+//         console.log("Response was:", responseText);
+//         throw error;
+//       }
+//     }
+//   }
+
+//   /**
+//    * Check if character is Traditional Chinese
+//    */
+//   private isTraditional(text: string): boolean {
+//     const converter = OpenCC.Converter({ from: "cn", to: "tw" });
+
+//     // If converting to Traditional changes the text, it's not pure Traditional
+//     const converted = converter(text);
+//     return converted === text;
+//   }
+
+//   /**
+//    * Converts to Traditional Chinese
+//    */
+//   private toTraditional(text: string): string {
+//     const converter = OpenCC.Converter({ from: "cn", to: "tw" });
+//     return converter(text);
+//   }
+
+//   /**
+//    * Validate sentences against level character set.
+//    * Removes any sentence containing characters outside the allowed set.
+//    * @param sentences - array of sentences to validate
+//    * @param level - Level to validate against
+//    * @returns array of validated sentences
+//    */
+//   private validateSentences(sentences: string[], level: Level): string[] {
+//     const allowedChars = new Set(level.characters.map((c) => c.char));
+
+//     return sentences.filter((sentence) => {
+//       // remove punctuation
+//       const stripped = sentence.replace(/[。！？，、,.!?]/g, "");
+//       const isValid = [...stripped].every((char) => allowedChars.has(char));
+//       if (!isValid) {
+//         console.warn(
+//           `⚠️ "${sentence}" contains characters not in level "${level.levelName}" and was removed.`,
+//         );
+//       }
+//       return isValid;
+//     });
+//   }
+
+//   /**
+//    * Display all levels and their characters.
+//    */
+//   displayLevels(): void {
+//     console.log("\n📚 Database Levels");
+//     console.log("==================");
+//     if (this.levels.length === 0) {
+//       console.log("No levels created yet.");
+//       return;
+//     }
+
+//     for (const level of this.levels) {
+//       console.log(`\nLevel: ${level.levelName}`);
+//       if (level.characters.length === 0) {
+//         console.log("  (no characters)");
+//       } else {
+//         for (const character of level.characters) {
+//           console.log(`  - ${character.char} (${character.zhuyin.symbol})`);
+//         }
+//       }
+//     }
+//   }
+// }
+
+```
