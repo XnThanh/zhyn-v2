@@ -9,28 +9,18 @@
 [@current](../../../src/concepts/Quiz/QuizConcept.ts)
 
 # prompt: I have made a lot of changes to my Quiz specifications. Help me update the implementation to match the new concept spec
-# response:
-
+#
 ```typescript
 import { Collection, Db } from "npm:mongodb";
 import { Character, Empty, ID, ZhuyinRep } from "@utils/types.ts";
 import { freshID } from "@utils/database.ts";
 
 /**
- * Internal entity type representing a quiz question.
+ * Inte//ntity type representing a quiz question.
  * @state
- * a set of Questions with
- *   an questionId String
- *   a character Character
- *   a target ZhuyinRep
- *   a response ZhuyinRep?
- *   a startTime DateTime?
- *   an endTime DateTime?
- *   a speed Number?
- *   a correct Boolean?
- */
-interface QuestionEntry {
-  _id: ID; // questionId
+QuestionEntry {
+  _id: ID;
+  _id: ID; 
   character: Character;
   target: ZhuyinRep;
   response?: ZhuyinRep;
@@ -40,44 +30,25 @@ interface QuestionEntry {
   correct?: boolean;
 }
 
-/**
- * Internal entity type representing an incorrect record.
- * @state
- * a set of IncorrectRecords with
- *   a character Character
- *   a target ZhuyinRep
- *   a response ZhuyinRep
- */
+// Internal entity type representing an incorrect record.
 interface IncorrectRecordEntry {
-  _id: ID; // Unique ID for the record
+  _id: ID; 
   character: Character;
   target: ZhuyinRep;
   response: ZhuyinRep;
 }
 
-/**
- * Represents the main Quiz entity.
- * @state
- * a Quiz with
- *   a set of questionList Questions (IDs)
- *   a set of incorrectList IncorrectRecords (IDs)
- *   a questionCount Number
- *   a completedCount Number
- *   an avgSpeed Number
- *   an avgAccuracy Number
- *   an active Boolean
- *   a countdown Timer (represented as an expiry Date)
- */
+// Represents the main Quiz entity.
 interface QuizEntry {
   _id: ID; // quizId
-  questionList: ID[]; // Array of Question _id s
-  incorrectList: ID[]; // Array of IncorrectRecord _id s
+  questionList: ID[]; 
+  incorrectList: ID[]; 
   questionCount: number;
   completedCount: number;
   avgSpeed: number; // in milliseconds
   avgAccuracy: number; // 0.0 - 1.0 (proportion)
   active: boolean;
-  expiryTime: Date; // When the quiz should end
+  expiryTime: Date; 
 }
 
 // Helper function for incremental average
@@ -105,17 +76,13 @@ export default class QuizConcept {
   constructor(private readonly db: Db) {
     this.quizCollection = this.db.collection(this.PREFIX + "quizzes");
     this.questionsCollection = this.db.collection(this.PREFIX + "questions");
-    this.incorrectRecordsCollection = this.db.collection(
-      this.PREFIX + "incorrectRecords",
-    );
+    this.incorrectRecordsCollection = this.db.collection(this.PREFIX + "incorrectRecords");
   }
 
   /**
    * **action** beginQuiz (time: Number): (quizId: ID)
    *
-   * @effects create a new Quiz with empty Question set, questionCount=0, completedCount=0,
-   *          avgSpeed=0, avgAccuracy=0, active=False. Set countdown timer to 'time'
-   *          (in milliseconds from now) and set expiry time.
+   * @effects create a new Quiz with empty Question set, questionCount=0, completedCount=0, avgSpeed=0, avgAccuracy=0, active=False. Set countdown timer to 'time' (in milliseconds from now) and set expiry time.
    * @returns quizId
    */
   async beginQuiz({ time }: { time: number }): Promise<{ quizId: ID }> {

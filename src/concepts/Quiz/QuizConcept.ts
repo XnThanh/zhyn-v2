@@ -19,7 +19,7 @@ interface QuestionEntry {
 }
 
 // Represents a record of an incorrect answer, embedded within QuizDoc
-interface IncorrectRecord {
+export interface IncorrectRecord {
   character: Character;
   target: ZhuyinRep;
   response: ZhuyinRep;
@@ -103,7 +103,8 @@ export default class QuizConcept {
 
     if (!isExpired) {
       return {
-        error: `Quiz '${quizId}' cannot be ended yet. Timer has not run out.`,
+        error:
+          `Quiz '${quizId}' cannot be ended yet. Timer has not run out. Current time: ${currentTime.toISOString()}, Expiry time: ${quiz.expiryTime?.toISOString()}`,
       };
     }
 
