@@ -25,6 +25,7 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
 
   try {
     // Action 1: Make new quiz
+    // console.log("Making new quiz of length 1 second");
     const quizId = await quizConcept.makeQuiz({ length: 1 });
 
     // Action 2: Add three questions
@@ -37,6 +38,7 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
     const char3 = "呢" as Character;
     const zhuyin3 = "ㄋㄜ˙" as ZhuyinRep;
 
+    // console.log("Registering 3 questions")
     const question1 = await quizConcept.registerQuestion({
       quizId: quizId,
       character: char1,
@@ -62,6 +64,7 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
     const questionId3 = question3 as ID;
 
     // Action 3: Respond question 1 (correct)
+    // console.log("correctly answering question 1")
     const start1 = await quizConcept.startQuestion({
       quizId,
       questionId: questionId1,
@@ -74,6 +77,7 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
     });
 
     // Action 4: Respond question 2 (incorrect)
+    // console.log("incorrectly answering question 2")
     const start2 = await quizConcept.startQuestion({
       quizId,
       questionId: questionId2,
