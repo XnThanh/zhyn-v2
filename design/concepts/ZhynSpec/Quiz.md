@@ -38,7 +38,7 @@ makeQuiz (length: Number): quizId: String
 
 endQuiz (quizId: String): {[avgSpeed: Number, avgAccuracy: Number, incorrectRecords[]]}  
   &emsp; requires expiryTime < current time  
-  &emsp; effects return [avgSpeed, avgAccuracy, incorrectList] corresponding to quizId
+  &emsp; effects set activeQuestionId to "time's up", return [avgSpeed, avgAccuracy, incorrectList] corresponding to quizId
 
 registerQuestion (quizId: String, Character, ZhuyinRep): (questionId: String)  
   &emsp; requires quizId exists, Character and ZhuyinRep are a valid pair in ZhuyinDict  
