@@ -1,3 +1,12 @@
+---
+timestamp: 'Thu Oct 16 2025 01:54:14 GMT-0400 (Eastern Daylight Time)'
+parent: '[[..\20251016_015414.b9debf52.md]]'
+content_id: a991a7e63a4ce6f6b5cffd8525312744eba3845892121801de90010b767b06d4
+---
+
+# file: src\concepts\Quiz\QuizConcept.ts
+
+```typescript
 import { Collection, Db } from "npm:mongodb";
 import { Character, Empty, ID, ZhuyinRep } from "@utils/types.ts";
 import { freshID } from "@utils/database.ts";
@@ -306,3 +315,5 @@ export default class QuizConcept {
     return {};
   }
 }
+
+```
