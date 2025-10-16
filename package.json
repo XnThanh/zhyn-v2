@@ -1,5 +1,36 @@
 {
+  "name": "gemini-schedule-demo",
+  "version": "1.0.0",
+  "description": "A demo application showing how to use Google's Gemini API to create student schedules",
+  "main": "dist/database-tests.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/database-tests.js",
+    "dev": "ts-node --transpile-only database-tests.ts",
+    "test": "npm run build && node dist/database-tests.js",
+    "nochar": "npm run build && node -e \"require('./dist/database-tests.js').testNoCharacters()\"",
+    "onechar": "npm run build && node -e \"require('./dist/database-tests.js').testOneCharacter()\"",
+    "somechar": "npm run build && node -e \"require('./dist/database-tests.js').testSomeCharacters()\"",
+    "manychar": "npm run build && node -e \"require('./dist/database-tests.js').testManyCharacters()\""
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "schedule",
+    "student",
+    "demo",
+    "typescript"
+  ],
+  "author": "Xuan Ly",
+  "license": "MIT",
   "dependencies": {
-    "mongodb": "^6.20.0"
+    "mongodb": "^6.20.0",
+    "@google/generative-ai": "^0.21.0",
+    "opencc-js": "^1.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   }
 }
