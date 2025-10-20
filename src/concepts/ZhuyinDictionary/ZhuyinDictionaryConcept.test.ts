@@ -76,6 +76,34 @@ Deno.test("register: add new and duplicate characters", async () => {
   }
 });
 
+Deno.test("register: add simplified character", async () => {
+  const [db, client] = await testDb();
+  const dict = new ZhuyinDictionaryConcept(db);
+
+  try {
+    const char = "学" as Character;
+    const zhuyin = "ㄒㄩㄝˊ" as ZhuyinRep;
+
+    // Add new character
+    const res1 = await dict.register({ character: char, zhuyinRep: zhuyin });
+    assertEquals(res1, {}); // success
+
+    // Verify that the traditional character was added instead
+    const lookup = await dict.getAnswer({ character: "學" as Character });
+    assertEquals(lookup, { zhuyinRep: zhuyin });
+
+    // Verify that the simplified character is not present
+    const lookupSimplified = await dict.getAnswer({ character: char });
+    assertEquals(
+      "error" in lookupSimplified,
+      true,
+      `Simplified character should not be present in the dictionary`,
+    );
+  } finally {
+    await client.close();
+  }
+});
+
 Deno.test("unregister – existing and non-existing character", async () => {
   const [db, client] = await testDb();
   const dict = new ZhuyinDictionaryConcept(db);

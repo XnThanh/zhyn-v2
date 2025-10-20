@@ -1,5 +1,6 @@
 import { Collection, Db } from "npm:mongodb";
 import { Character, Empty, ZhuyinRep } from "@utils/types.ts";
+import { toTraditional } from "../../helpers/opencc-helper.ts";
 
 // Internal entity type representing a character entry in the dictionary
 interface CharacterEntry {
@@ -22,7 +23,7 @@ export default class ZhuyinDictionaryConcept {
   /**
    * **action** register (character: Character, zhuyinRep: ZhuyinRep)
    *
-   * @requires Character doesn't already exist
+   * @requires Character doesn't already exist with a different ZhuyinRep
    * @effects add Character and associate with that ZhuyinRep
    */
   async register(
@@ -35,14 +36,31 @@ export default class ZhuyinDictionaryConcept {
     const existing = await this.charactersCollection.findOne({
       _id: character,
     });
-    if (existing) {
-      return { error: `Character '${character}' already registered.` };
+    if (existing && existing.zhuyinRep !== zhuyinRep) {
+      return {
+        error:
+          `Character '${character}' already registered with the following ZhuyinRep: ${existing.zhuyinRep}.`,
+      };
+    } else if (existing) {
+      return {}; // Already registered with the same ZhuyinRep, no action needed
+    }
+
+    // Convert character to Traditional Chinese if needed
+    var characterToAdd = character;
+    if (character !== toTraditional(character)) {
+      characterToAdd = toTraditional(character) as Character;
+      console.log(
+        `AUTO CONVERTED ${character} to Traditional Chinese: ${characterToAdd}`,
+      );
     }
 
     // Insert the new character and its Zhuyin representation
-    await this.charactersCollection.insertOne({ _id: character, zhuyinRep });
+    await this.charactersCollection.insertOne({
+      _id: characterToAdd,
+      zhuyinRep,
+    });
 
-    console.log(`REGISTERED ${character} --> ${zhuyinRep}`);
+    console.log(`REGISTERED ${characterToAdd} --> ${zhuyinRep}`);
     return {};
   }
 
