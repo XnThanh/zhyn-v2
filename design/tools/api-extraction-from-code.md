@@ -8,6 +8,7 @@ The following is an explanation of how concepts are implemented, for the purpose
 
 # prompt: 
 
+<<<<<<< HEAD
 Now, analyze the following Concept Implementation and generate the API documentation based on these instructions.
 # response:
 
@@ -20,6 +21,45 @@ Now, analyze the following Concept Implementation and generate the API documenta
 # API Specification: Labeling Concept
 
 **Purpose:** organize items by associating descriptive keywords, allowing for flexible categorization and retrieval.
+=======
+Please extract an API for this app from the following two concepts:
+
+## ZhuyinDictionary
+
+Specification:
+
+[@ZhuyinDictionary](../../design/concepts/ZhynSpec/ZhuyinDictionary.md)
+
+Code:
+
+[@ZhuyinDictionaryConcept.ts](../../src/concepts/ZhuyinDictionary/ZhuyinDictionaryConcept.ts)
+
+## Quiz
+
+Specification:
+
+[@Quiz](../../design/concepts/ZhynSpec/Quiz.md)
+
+Code:
+
+[@QuizConcept.ts](../../src/concepts/Quiz/QuizConcept.ts)
+
+## LevelMap
+
+Specification:
+
+[@LevelMap](../../design/concepts/ZhynSpec/LevelMap.md)
+
+Code:
+
+[@LevelMapConcept.ts](../../src/concepts/LevelMap/LevelMapConcept.ts)
+# response:
+
+```markdown
+# API Specification: ZhuyinDictionary Concept
+
+**Purpose:** tracks the Zhuyin Representation of Characters
+>>>>>>> cffcb86 (backend api spec)
 
 ---
 

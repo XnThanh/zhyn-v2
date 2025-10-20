@@ -1,0 +1,23 @@
+---
+timestamp: 'Mon Oct 20 2025 00:50:39 GMT-0400 (Eastern Daylight Time)'
+parent: '[[..\20251020_005039.68deb0be.md]]'
+content_id: 1d29dbf9ea72740a0d7e2f088769c29384863cde24caea4778e7ce6598023094
+---
+
+# file: deno.json
+
+```json
+{
+  "compilerOptions": {
+    "types": ["./types/opencc-js.d.ts"]
+  },
+  "imports": {
+    "@concepts/": "./src/concepts/",
+    "@utils/": "./src/utils/"
+  },
+  "tasks": {
+    "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api"
+  }
+}
+
+```
