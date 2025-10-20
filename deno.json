@@ -1,20 +1,12 @@
 {
-<<<<<<< HEAD
-    "imports": {
-        "@concepts/": "./src/concepts/",
-        "@utils/": "./src/utils/"
-    },
-    "tasks": {
-        "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api"
-    }
-}
-=======
   "compilerOptions": {
     "types": ["./types/opencc-js.d.ts"]
   },
   "imports": {
     "@concepts/": "./src/concepts/",
     "@utils/": "./src/utils/"
+  },
+  "tasks": {
+    "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api"
   }
 }
->>>>>>> 9557c71 (LevelMap test complete)
