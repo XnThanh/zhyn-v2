@@ -175,10 +175,11 @@ export default class QuizConcept {
    *
    * @requires questionId belongs in quizId, QuizEntry has no active questions
    * @effects mark question as started
+   * @returns expiryTime if this is the first question started, otherwise empty object
    */
   async startQuestion(
     { quizId, questionId }: { quizId: ID; questionId: ID },
-  ): Promise<Empty | { error: string }> {
+  ): Promise<Empty | { expiryTime: Date } | { error: string }> {
     const quiz = await this.quizzesCollection.findOne({ _id: quizId });
     if (!quiz) {
       return { error: `Quiz with ID '${quizId}' not found.` };
@@ -209,9 +210,16 @@ export default class QuizConcept {
     }
 
     const quizUpdates: Partial<QuizEntry> = {};
+    let expiryTime: Date | undefined;
+    const isFirstQuestion = !quiz.expiryTime;
+
     if (!quiz.expiryTime) {
       // Begin quiz timer when the first question is started
-      quizUpdates.expiryTime = new Date(Date.now() + quiz.length * 1000); // length is in seconds
+      expiryTime = new Date(Date.now() + quiz.length * 1000); // length is in seconds
+      quizUpdates.expiryTime = expiryTime;
+      console.log(
+        `Quiz ${quizId} timer started, will expire at ${expiryTime.toISOString()}`,
+      );
     }
     quizUpdates.activeQuestionId = questionId;
 
@@ -226,6 +234,10 @@ export default class QuizConcept {
     );
 
     console.log(`STARTED question ${questionId} in quiz ${quizId}`);
+
+    if (isFirstQuestion && expiryTime) {
+      return { expiryTime };
+    }
     return {};
   }
 
