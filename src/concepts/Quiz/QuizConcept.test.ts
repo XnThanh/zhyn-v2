@@ -69,6 +69,13 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
       quizId,
       questionId: questionId1,
     });
+    assertNoError(start1);
+    // First question should return expiryTime
+    assert(
+      "expiryTime" in start1 && start1.expiryTime instanceof Date,
+      "First question should return expiryTime",
+    );
+
     await delay(500);
     const submit1 = await quizConcept.submitAnswer({
       quizId,
@@ -82,6 +89,13 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
       quizId,
       questionId: questionId2,
     });
+    assertNoError(start2);
+    // Second question should NOT return expiryTime
+    assert(
+      !("expiryTime" in start2),
+      "Second question should not return expiryTime",
+    );
+
     await delay(300);
     const wrongzhuyin2 = "ㄏㄠ" as ZhuyinRep;
     const submit2 = await quizConcept.submitAnswer({
@@ -95,6 +109,13 @@ Deno.test("Principle: system makes quiz and registers questions, user responds, 
       quizId,
       questionId: questionId3,
     });
+    assertNoError(start3);
+    // Third question should NOT return expiryTime
+    assert(
+      !("expiryTime" in start3),
+      "Third question should not return expiryTime",
+    );
+
     await delay(300); // timer should run out before this delay ends
 
     // TODO: remove below line when timer sync is implemented
@@ -200,10 +221,16 @@ Deno.test("startQuestion", async (t) => {
     const questionId1 = question1 as ID;
 
     await t.step("cannot start question that already started", async () => {
-      await quizConcept.startQuestion({
+      const startFirst = await quizConcept.startQuestion({
         quizId,
         questionId: questionId1,
       });
+      assertNoError(startFirst);
+      // First question should return expiryTime
+      assert(
+        "expiryTime" in startFirst && startFirst.expiryTime instanceof Date,
+        "First question should return expiryTime",
+      );
 
       const startAgain = await quizConcept.startQuestion({
         quizId,

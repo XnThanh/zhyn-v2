@@ -13,7 +13,7 @@ a set of QuizEntries with
   &emsp; an activeQuestionId String  
   &emsp; a questionCount Number  
   &emsp; a completedCount Number  
-  &emsp; an avgSpeed Number  
+  &emsp; an avgSpeed Number (ms)  
   &emsp; an avgAccuracy Number  
   &emsp; an expiryTime DateTime?  
   
@@ -57,6 +57,7 @@ startQuestion (quizId: String, questionId: String)
   &emsp; if expiryTime unset: set expiryTime = current time + length (in essence, begin quiz when user attempts first question)  
   &emsp; update startTime of coresponding Question to current time  
   &emsp; set QuizEntry activeQuestionId = questionId  
+  &emsp; return expiry time if first question  
 
 submitAnswer (quizId, questionId: String, response: ZhuyinRep)  
   &emsp; requires QuizEntry activeQuestionId === questionId  
