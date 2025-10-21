@@ -277,7 +277,7 @@ ${level.characters.join(",")}
 
 ${state}
 
-Generate ${numSentences} new sentences related to the topic: "${topic}" using only the permitted characters.
+Generate ${numSentences} new ${level._id}-level sentences related to the topic: "${topic}" using only the permitted characters.
 
 Return your response as a JSON object with this exact structure:
 {
