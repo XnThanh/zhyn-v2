@@ -1,3 +1,9 @@
+# Assignment 4b Changes
+- Slightly updated functionality of registerCharacter in ZhuyinDictionary
+  - succeed when adding duplicate character if the zhuyin matches instead of throwing error
+  - if user provides simplified character, auto convert to traditional character
+- Added a characterLibrary which is used to populate the ZhuyinDictionary
+
 # Assignment 4a
 
 [overall design file](/design/design-files/main.md)
