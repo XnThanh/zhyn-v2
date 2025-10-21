@@ -4,6 +4,7 @@
   - if user provides simplified character, auto convert to traditional character
 - Added a characterLibrary which is used to populate the ZhuyinDictionary
 - Wrote and ran a script to add all characters in library to mongo db database
+- Updated LevelMap concept to initialize the llm in constructor
 
 # Assignment 4a
 
