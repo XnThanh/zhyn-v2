@@ -12,7 +12,8 @@
     "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api",
     "import": "deno run --allow-read --allow-write --allow-env src/utils/generate_imports.ts",
     "build": "deno run import",
-    "register": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalCharacterRegistration.ts"
+    "register": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalCharacterRegistration.ts",
+    "populate": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalLevelPopulation.ts"
   },
   "lint": {
     "rules": {
