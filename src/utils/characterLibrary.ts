@@ -434,6 +434,12 @@ const advancedArticleAddOn = [
   { char: "喽", zhuyin: "ㄌㄡ˙" },
 ];
 
+const punctuationSet = [
+  { char: "。", zhuyin: "`." },
+  { char: "？", zhuyin: "`?" },
+  { char: "！", zhuyin: "`!" },
+];
+
 // COMPOSITE SETS
 
 export const newbieSet = [
@@ -444,6 +450,7 @@ export const newbieSet = [
   ...basicNounSet,
   ...basicColorSet,
   ...basicMiscSet,
+  ...punctuationSet,
 ];
 
 export const beginnerAddOnSet = [
