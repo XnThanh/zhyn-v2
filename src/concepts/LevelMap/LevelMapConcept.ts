@@ -22,6 +22,7 @@ interface Level {
  */
 export default class LevelMapConcept {
   private levels: Collection<Level>;
+  private llm: GeminiLLM;
 
   /**
    * Constructs a new LevelMapConcept instance.
@@ -30,6 +31,10 @@ export default class LevelMapConcept {
   constructor(private readonly db: Db) {
     // Initialize the MongoDB collection for storing level-character associations.
     this.levels = this.db.collection(PREFIX + "levels");
+
+    // Initialize Gemini LLM
+    const config = JSON.parse(Deno.readTextFileSync("config.json"));
+    this.llm = new GeminiLLM(config);
   }
 
   get collectionName() {
@@ -132,17 +137,14 @@ export default class LevelMapConcept {
    * Generate a series of sentences on a given topic suitable for a given level.
    * @param levelName - The name of the level
    * @param topic - The topic for the generated sentence
-   * @param llm - The connected LLM (e.g., Gemini)
    * @returns A list of sentences
    */
   async generateSentences({
     levelName,
     topic,
-    llm,
   }: {
     levelName: LevelName;
     topic: string;
-    llm: GeminiLLM;
   }): Promise<string[]> {
     const level = await this.levels.findOne({ _id: levelName });
     if (!level) {
@@ -160,7 +162,7 @@ export default class LevelMapConcept {
     return await this.llmGenerate(
       topic,
       level,
-      llm,
+      this.llm,
       defaultRetries,
       numSentences,
       passRate,

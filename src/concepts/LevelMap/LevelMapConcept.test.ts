@@ -1,32 +1,14 @@
 import { assert, assertEquals } from "jsr:@std/assert";
 import LevelMapConcept from "./LevelMapConcept.ts";
-import { Config, GeminiLLM } from "../../../gemini-llm.ts";
 import { LevelEmptyError } from "../../utils/errors/LevelEmptyError.ts";
 import { LevelEnum } from "../../utils/LevelEnum.ts";
 import * as vocab from "./testVocabSets.ts";
 import { testDb } from "@utils/database.ts";
 import { Character } from "@utils/types.ts";
-import config from "../../../config.json" with { type: "json" };
-
-// Helper to load config
-function loadConfig(): Config {
-  try {
-    return { ...config } as Config;
-  } catch (error) {
-    console.error(
-      "❌ Error loading config.json. Please ensure it exists with your API key.",
-    );
-    console.error("Error details:", (error as Error).message);
-    Deno.exit(1);
-  }
-}
 
 Deno.test("Principle: add/remove characters and generate sentence sequence", async () => {
   const [db, client] = await testDb();
   const levelMap = new LevelMapConcept(db);
-
-  const config = loadConfig();
-  const llm = new GeminiLLM(config, 6); // Max characters in intermediate level after steps
 
   try {
     // Step 1: add 2 characters to Intermediate level
@@ -87,7 +69,6 @@ Deno.test("Principle: add/remove characters and generate sentence sequence", asy
     const sentences = await levelMap.generateSentences({
       levelName: LevelEnum.Intermediate,
       topic: "daily life",
-      llm,
     });
 
     assert(
@@ -103,9 +84,6 @@ Deno.test("LevelMap: generateSentence fails on empty level", async () => {
   const [db, client] = await testDb();
   const levelMap = new LevelMapConcept(db);
 
-  const config = loadConfig();
-  const llm = new GeminiLLM(config);
-
   try {
     await levelMap.createLevel({ levelName: LevelEnum.Newbie });
     let errorThrown = false;
@@ -113,7 +91,6 @@ Deno.test("LevelMap: generateSentence fails on empty level", async () => {
       await levelMap.generateSentences({
         levelName: LevelEnum.Newbie,
         topic: "daily life",
-        llm,
       });
     } catch (e) {
       assert(e instanceof LevelEmptyError, "Expected LevelEmptyError");
@@ -132,9 +109,6 @@ Deno.test("LevelMap: generateSentence works with one character", async () => {
   const [db, client] = await testDb();
   const levelMap = new LevelMapConcept(db);
 
-  const config = loadConfig();
-  const llm = new GeminiLLM(config, 1);
-
   try {
     await levelMap.createLevel({ levelName: LevelEnum.Newbie });
     const character = "爸" as Character;
@@ -143,7 +117,6 @@ Deno.test("LevelMap: generateSentence works with one character", async () => {
     const sentences = await levelMap.generateSentences({
       levelName: LevelEnum.Newbie,
       topic: "family",
-      llm,
     });
 
     assert(
@@ -159,13 +132,10 @@ Deno.test("LevelMap: generateSentence works with multiple characters", async () 
   const [db, client] = await testDb();
   const levelMap = new LevelMapConcept(db);
 
-  const config = loadConfig();
-  const characters = ["爸", "媽", "家", "愛", "我"] as Character[];
-  const llm = new GeminiLLM(config, characters.length);
-
   try {
     await levelMap.createLevel({ levelName: LevelEnum.Newbie });
 
+    const characters = ["爸", "媽", "家", "愛", "我"] as Character[];
     for (const character of characters) {
       await levelMap.addCharacter({ levelName: LevelEnum.Newbie, character });
     }
@@ -173,7 +143,6 @@ Deno.test("LevelMap: generateSentence works with multiple characters", async () 
     const sentences = await levelMap.generateSentences({
       levelName: LevelEnum.Newbie,
       topic: "family",
-      llm,
     });
 
     assert(
@@ -189,9 +158,6 @@ Deno.test("LevelMap: generateSentence works with many characters", async () => {
   const [db, client] = await testDb();
   const levelMap = new LevelMapConcept(db);
 
-  const config = loadConfig();
-  const llm = new GeminiLLM(config, vocab.beginnerSet.length);
-
   try {
     await levelMap.createLevel({ levelName: LevelEnum.Beginner });
 
@@ -205,7 +171,6 @@ Deno.test("LevelMap: generateSentence works with many characters", async () => {
     const sentences = await levelMap.generateSentences({
       levelName: LevelEnum.Beginner,
       topic: "restaurant",
-      llm,
     });
 
     assert(
