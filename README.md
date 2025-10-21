@@ -3,6 +3,7 @@
   - succeed when adding duplicate character if the zhuyin matches instead of throwing error
   - if user provides simplified character, auto convert to traditional character
 - Added a characterLibrary which is used to populate the ZhuyinDictionary
+- Wrote and ran a script to add all characters in library to mongo db database
 
 # Assignment 4a
 
