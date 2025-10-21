@@ -8,6 +8,7 @@
   },
   "tasks": {
     "concepts": "deno run --allow-net --allow-read --allow-sys --allow-env src/concept_server.ts --port 8000 --baseUrl /api",
-    "register": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalCharacterRegistration.ts"
+    "register": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalCharacterRegistration.ts",
+    "populate": "deno run --allow-env --allow-net --allow-sys --allow-read src/scripts/internalLevelPopulation.ts"
   }
 }
