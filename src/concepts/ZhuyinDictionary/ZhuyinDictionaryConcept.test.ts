@@ -52,13 +52,14 @@ Deno.test("Principle: Register several characters, lookup a character, lookup a 
   }
 });
 
-Deno.test("register: add new and duplicate characters", async () => {
+Deno.test("register: add duplicate characters", async () => {
   const [db, client] = await testDb();
   const dict = new ZhuyinDictionaryConcept(db);
 
   try {
     const char = "爸" as Character;
     const zhuyin = "ㄅㄚˋ" as ZhuyinRep;
+    const zhuyin2 = "ㄅㄚ˙" as ZhuyinRep;
 
     // Add new character
     const res1 = await dict.register({ character: char, zhuyinRep: zhuyin });
@@ -66,8 +67,11 @@ Deno.test("register: add new and duplicate characters", async () => {
 
     // Try adding the same character again
     const res2 = await dict.register({ character: char, zhuyinRep: zhuyin });
+    assertEquals(res2, {}); // no error
+
+    const res3 = await dict.register({ character: char, zhuyinRep: zhuyin2 });
     assertEquals(
-      "error" in res2,
+      "error" in res3,
       true,
       `Registering duplicate character should throw an error`,
     );

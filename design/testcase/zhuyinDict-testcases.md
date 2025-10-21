@@ -6,7 +6,9 @@
 
 **register**  
 add new character  
-add duplicate character  
+add duplicate character same zhuyin  
+add duplicate character same zhuyin  
+add simplified character  
 
 **unregister**  
 character exists  
