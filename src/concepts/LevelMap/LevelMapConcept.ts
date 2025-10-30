@@ -33,8 +33,7 @@ export default class LevelMapConcept {
     this.levels = this.db.collection(PREFIX + "levels");
 
     // Initialize Gemini LLM
-    const config = JSON.parse(Deno.readTextFileSync("config.json"));
-    this.llm = new GeminiLLM(config);
+    this.llm = new GeminiLLM();
   }
 
   get collectionName() {

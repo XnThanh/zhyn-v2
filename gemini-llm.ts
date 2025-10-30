@@ -18,8 +18,14 @@ export class GeminiLLM {
   private apiKey: string;
   private temperature: number;
 
-  constructor(config: Config, vocabSize?: number) {
-    this.apiKey = config.apiKey;
+  constructor(vocabSize?: number) {
+    const envKey = Deno.env.get("GEMINI_API_KEY");
+    if (!envKey) {
+      throw new Error(
+        "GEMINI_API_KEY not set in environment. Please add it before starting the server.",
+      );
+    }
+    this.apiKey = envKey;
     this.temperature = this.computeTemperature(vocabSize ?? 0);
 
     // Debug: Log only the last few characters of the API key for diagnostics.
