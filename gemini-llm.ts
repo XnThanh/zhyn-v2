@@ -21,6 +21,19 @@ export class GeminiLLM {
   constructor(config: Config, vocabSize?: number) {
     this.apiKey = config.apiKey;
     this.temperature = this.computeTemperature(vocabSize ?? 0);
+
+    // Debug: Log only the last few characters of the API key for diagnostics.
+    // Avoid printing the full key. If key is very short, ensure at least one char remains hidden.
+    try {
+      const keyLen = this.apiKey?.length ?? 0;
+      const revealCount = keyLen > 5 ? 5 : Math.max(1, keyLen - 1);
+      const suffix = keyLen > 0 ? this.apiKey.slice(-revealCount) : "";
+      console.log(
+        `GeminiLLM: API key ends with: ${suffix} (showing last ${revealCount})`,
+      );
+    } catch {
+      // no-op: never let logging interfere with construction
+    }
   }
 
   private computeTemperature(vocabSize: number): number {
