@@ -192,6 +192,12 @@ export function startRequestingServer(
     throw new Error("Requesting concept missing or broken.");
   }
   const app = new Hono();
+
+  app.use("/*", (c, next) => {
+    console.log("Incoming request:", c.req.path);
+    return next();
+  });
+
   app.use(
     "/*",
     cors({
