@@ -196,13 +196,13 @@ export const ValidateSentencesResponse: Sync = (
 // Quiz Syncs
 // ============================================================================
 
-export const MakeQuizRequest: Sync = ({ request, length }) => ({
+export const MakeQuizRequest: Sync = ({ request, apiKey, length }) => ({
   when: actions([
     Requesting.request,
-    { path: "/Quiz/makeQuiz", length },
+    { path: "/Quiz/makeQuiz", apiKey, length },
     { request },
   ]),
-  then: actions([Quiz.makeQuiz, { length }]),
+  then: actions([Quiz.makeQuiz, { apiKey, length }]),
 });
 
 export const MakeQuizResponse: Sync = ({ request, quizId }) => ({

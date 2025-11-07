@@ -1,6 +1,7 @@
 import { Collection, Db } from "npm:mongodb";
 import { Character, Empty, ID, ZhuyinRep } from "@utils/types.ts";
 import { freshID } from "@utils/database.ts";
+import { requireApiKey } from "@utils/api-key-helper.ts";
 
 // Declare collection prefix, use concept name
 const PREFIX = "Quiz" + ".";
@@ -54,14 +55,20 @@ export default class QuizConcept {
   }
 
   /**
-   * **action** makeQuiz (length: Number): quizId: String
-   *
-   * @effects Initialize new empty quiz
-   * @returns quizId
+   * **action** makeQuiz (apiKey: String, length: Number): quizId: ID | error: String
+   * @effects Initialize new empty quiz (requires valid API key)
+   * @returns quizId or error
    */
   async makeQuiz(
-    { length }: { length: number },
-  ): Promise<{ quizId: ID }> {
+    { apiKey, length }: { apiKey: string; length: number },
+  ): Promise<{ quizId: ID } | { error: string }> {
+    // Validate API key first
+    try {
+      requireApiKey(apiKey);
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+
     const quizId = freshID();
     await this.quizzesCollection.insertOne({
       _id: quizId,
