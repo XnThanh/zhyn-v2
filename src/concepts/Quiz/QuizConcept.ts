@@ -61,7 +61,7 @@ export default class QuizConcept {
    */
   async makeQuiz(
     { length }: { length: number },
-  ): Promise<ID> {
+  ): Promise<{ quizId: ID }> {
     const quizId = freshID();
     await this.quizzesCollection.insertOne({
       _id: quizId,
@@ -77,7 +77,7 @@ export default class QuizConcept {
     console.log(
       `CREATED new quiz with ID: ${quizId}, length: ${length} seconds`,
     );
-    return quizId;
+    return { quizId };
   }
 
   /**
@@ -141,7 +141,7 @@ export default class QuizConcept {
       character: Character;
       targetZhuyinRep: ZhuyinRep;
     },
-  ): Promise<ID | { error: string }> {
+  ): Promise<{ questionId: ID } | { error: string }> {
     const quiz = await this.quizzesCollection.findOne({ _id: quizId });
 
     if (!quiz) {
@@ -167,7 +167,7 @@ export default class QuizConcept {
     console.log(
       `${character} REGISTERED as question ${questionId} in quiz ${quizId}`,
     );
-    return questionId;
+    return { questionId };
   }
 
   /**

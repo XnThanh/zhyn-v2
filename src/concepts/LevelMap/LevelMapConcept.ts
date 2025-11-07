@@ -144,7 +144,7 @@ export default class LevelMapConcept {
   }: {
     levelName: LevelName;
     topic: string;
-  }): Promise<string[]> {
+  }): Promise<{ sentences: string[] }> {
     const level = await this.levels.findOne({ _id: levelName });
     if (!level) {
       throw new LevelNotFoundError(`❌ Level "${levelName}" not found.`);
@@ -158,7 +158,7 @@ export default class LevelMapConcept {
     const passRate = 0.3;
     const defaultRetries = 4;
 
-    return await this.llmGenerate(
+    const sentences = await this.llmGenerate(
       topic,
       level,
       this.llm,
@@ -166,6 +166,8 @@ export default class LevelMapConcept {
       numSentences,
       passRate,
     );
+
+    return { sentences };
   }
 
   /**
@@ -174,7 +176,7 @@ export default class LevelMapConcept {
    * @param llm - GeminiLLM instance
    * @param maxAttempts - total retry attempts
    */
-  private async llmGenerate(
+  public async llmGenerate(
     topic: string,
     level: Level,
     llm: GeminiLLM,
@@ -258,7 +260,7 @@ export default class LevelMapConcept {
   /**
    * Create the prompt for Gemini with hardwired preferences
    */
-  private createPrompt(
+  public createPrompt(
     topic: string,
     level: Level,
     numSentences: number,
@@ -299,7 +301,7 @@ Return ONLY the JSON object, no additional text.`;
    * @returns Array of valid sentences
    * @throws LLMRetryableError or other errors on failure
    */
-  private parseGeneratedSentences(
+  public parseGeneratedSentences(
     responseText: string,
     level: Level,
   ): string[] {
@@ -347,7 +349,7 @@ Return ONLY the JSON object, no additional text.`;
    * @param level - Level to validate against
    * @returns array of validated sentences
    */
-  private validateSentences(sentences: string[], level: Level): string[] {
+  public validateSentences(sentences: string[], level: Level): string[] {
     const allowedChars = new Set(level.characters.map((c) => c as string));
 
     return sentences.filter((sentence) => {
