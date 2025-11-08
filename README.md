@@ -1,7 +1,7 @@
 # Assignment 4c Changes
-[Design Document](/designdoc.md)
-[Reflection](/reflection.md)
-[Action Trace](trace.md)
+[Design Document](/designdoc.md)  
+[Reflection](/reflection.md)  
+[Action Trace](trace.md)  
 [Video](https://drive.google.com/file/d/1U-b1YhFfUWNMVhH9KOqnoNg54PRR56QK/view?usp=sharing)
 
 # Assignment 4b Changes
