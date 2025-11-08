@@ -154,7 +154,7 @@ export default class LevelMapConcept {
       throw new LevelEmptyError(`❌ Level "${levelName}" has no characters.`);
     }
 
-    const numSentences = 15;
+    const numSentences = 8;
     const passRate = 0.3;
     const defaultRetries = 4;
 
