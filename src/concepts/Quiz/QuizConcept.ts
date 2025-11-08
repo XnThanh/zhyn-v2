@@ -268,7 +268,9 @@ export default class QuizConcept {
     if (quiz.activeQuestionId !== questionId) {
       return {
         error:
-          `Question '${questionId}' is not the currently active question for Quiz '${quizId}'.`,
+          `Question '${questionId}' is not the currently active question for Quiz '${quizId}'. ` +
+          `Active question: ${quiz.activeQuestionId ?? "none"}. ` +
+          `Call startQuestion for '${questionId}' before submitting an answer.`,
       };
     }
 
@@ -317,8 +319,15 @@ export default class QuizConcept {
       (quiz.avgAccuracy * quiz.completedCount + newAccuracyValue) /
       newCompletedCount;
 
+    // Find the next question in sequence
+    const currentIndex = quiz.questionList.indexOf(questionId);
+    const nextQuestionId =
+      currentIndex >= 0 && currentIndex < quiz.questionList.length - 1
+        ? quiz.questionList[currentIndex + 1]
+        : undefined;
+
     const quizUpdates: Partial<QuizEntry> = {};
-    quizUpdates.activeQuestionId = undefined;
+    quizUpdates.activeQuestionId = nextQuestionId;
     quizUpdates.avgSpeed = newAvgSpeed;
     quizUpdates.avgAccuracy = newAvgAccuracy;
     quizUpdates.completedCount = newCompletedCount;
@@ -327,6 +336,17 @@ export default class QuizConcept {
       { _id: quizId },
       { $set: quizUpdates },
     );
+
+    // If there's a next question, mark it as started
+    if (nextQuestionId) {
+      await this.questionsCollection.updateOne(
+        { _id: nextQuestionId },
+        { $set: { startTime: new Date() } },
+      );
+      console.log(
+        `AUTO-STARTED next question ${nextQuestionId} in quiz ${quizId}`,
+      );
+    }
 
     if (!correct) {
       const incorrectRecord: IncorrectRecord = {
@@ -338,6 +358,13 @@ export default class QuizConcept {
       await this.quizzesCollection.updateOne(
         { _id: quizId },
         { $push: { incorrectList: incorrectRecord } },
+      );
+
+      // Log each time an incorrect record is added/updated for observability
+      console.log(
+        `INCORRECT record added to quiz ${quizId} for question ${questionId}: ${
+          JSON.stringify(incorrectRecord)
+        }`,
       );
     }
 
