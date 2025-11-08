@@ -2,7 +2,7 @@
 [Design Document](/designdoc.md)  
 [Reflection](/reflection.md)  
 [Action Trace](trace.md)  
-[Video](https://drive.google.com/file/d/1U-b1YhFfUWNMVhH9KOqnoNg54PRR56QK/view?usp=sharing)
+[Video](https://drive.google.com/file/d/1BjriJERuSLJN-0EdphqSZqRsLDsT99HA/view?usp=sharing)
 
 # Assignment 4b Changes
 - Slightly updated functionality of registerCharacter in ZhuyinDictionary
