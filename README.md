@@ -1,8 +1,8 @@
 # Assignment 4c Changes
 [Design Document](/designdoc.md)
 [Reflection](/reflection.md)
-[Action Trace]
-VIDEO HERE
+[Action Trace](trace.md)
+[Video](https://drive.google.com/file/d/1U-b1YhFfUWNMVhH9KOqnoNg54PRR56QK/view?usp=sharing)
 
 # Assignment 4b Changes
 - Slightly updated functionality of registerCharacter in ZhuyinDictionary
