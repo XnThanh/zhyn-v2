@@ -1,3 +1,9 @@
+# Assignment 4c Changes
+[Design Document](/designdoc.md)
+[Reflection](/reflection.md)
+[Action Trace]
+VIDEO HERE
+
 # Assignment 4b Changes
 - Slightly updated functionality of registerCharacter in ZhuyinDictionary
   - succeed when adding duplicate character if the zhuyin matches instead of throwing error
